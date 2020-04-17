@@ -1,0 +1,105 @@
+---
+title: "AndrewMitchellProject2"
+author: "Andrew Mitchell"
+output: 
+  rmarkdown::html_vignette:
+    toc: yes
+vignette: >
+  %\VignetteIndexEntry{AndrewMitchellProject2}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(AndrewMitchellProject2)
+```
+
+# DDT Data Set
+
+The DDT data set within this package details observations taken on fish in areas in and in tributaries of the Tennessee River, where researchers were measuring the concentration of DDT present in each fish.  The following measurements were taken on each fish:
+
+* Mile - the mile of the river at which the fish was caught to be examined
+
+* Length - the length of the fish
+
+* Weight - the weight of the fish
+
+* DDT -  the concentration of DDT measured within the fish
+
+* River - the section of the river in which the fish was caught
+
+* Species - the species of the fish
+
+This data set is the basis of the functions within this package.
+
+# plotter() function
+
+The plotter() function takes in a variety of variables designed to function alongside the Shiny server included in the package.  The function can create the following types of plots.
+
+* Scatterplots of two variables
+
+* Biplots of principal components of data
+
+* Boxplots of one variable
+
+* Screeplots of principal components of data
+
+Transformations for the data are done with in the const() function, which releases a constructed object of type inf, which contains the following:
+
+* The original data set, possibly rearranged or with parts removed (i.e. certain variables or subsets of the data that have a particular value for a given variable)
+
+* A principal component object created for a specified subset of the data or the entire data set
+
+* The eigenvalues of the covariance or correlation matrix for the quantitative variables from the data
+
+* The eigenvectors corresponding to the above eigenvalues
+
+Each of these portions of the returned data are used in the creation of the plots being studied.
+
+## Scatterplot
+
+Scatterplots can be created by the plotter() function for any combination of two of the quantitative variables in the DDT data set.  In addition, the data within the plot can be color-coded to indicate either the river from which they were taken or the species of fish depending on the user's choice.  The scatterplot indicates a significant difference in fish concentrations between the Tennessee River and its tributaries, with the fish the furthest distances nearly all coming from this river.
+
+## Biplot
+
+Biplots plot the most significant two principal components of the data set, i.e. those corresponding to the largest eigenvalues.  The individual data are plotted, and arrows are placed on the plot for each variable being used in PCA with a magnitude and direction.  Arrows pointing to the right have a positive correlation with the first principal component, and pointing up have a positive correlation with the second principal component.  The opposite can be said for arrows pointing to the left and downward respectively.  An arrow with a larger magnitude in a particular direction indicates a stronger correlation, no matter whether positive or negative.  The principal components of the data are defined as follows, where $\{y_i\}_{i=1}^p$ are the principal components (with $p$ being the number of variables being used), and $\{e_i\}_{i=1}^p$ are the eigenvectors of whichever matrix is being used:
+
+$$
+\begin{eqnarray}
+y_1&=&e_{11}x_1+e_{12}x_2+...+e_{1p}x_p\\
+y_2&=&e_{21}x_1+e_{22}x_2+...+e_{2p}x_p\\
+\vdots\\
+y_p&=&e_{p1}x_1+e_{p2}x_2+...+e_{pp}x_p
+\end{eqnarray}
+$$
+
+From this construction, one can see how since the largest eigenvalue has large effect on the principal component variance, the variable whose influence matches the first principal component would have the largest effect overall.
+
+## Boxplot
+
+Boxplots are used primarily as an indication of spread of data or comparison between sets of data.  The lines on the box on a boxplot indicate the quartiles of the data, and the end of the "whiskers" indicate the last data point before the others are considered outliers (typically defined in this situation by not within 1.5 times the interquartile range of the data from the middle 50% of data). Boxplots also indicate the median, which can be a useful indicator of centrality due to its resistance to outliers.
+
+## Screeplot
+
+The screeplot shows the variances of the principal components in the order of importance of the components.  The most common use of the screeplot is to determine at which point to cut off which principal components are being examined: only those who have significant impact on the data will be used.  The plot does not give any exact numbers to calculate, but researchers use the change in slopes of lines connecting the components' variances to make subjective decisions.  Such decisions can alleviate some of the challenges that arise when dealing with vast numbers of variables.
+
+# Shiny Server
+
+The server in this package is comprised of the server.R and ui.R files.  These files together provide the following options for the user of the server:
+
+* Removal of quantitative variables (up to the point where they can still be used)
+
+* Removal of data of a particular species or a particular river
+
+* Changing the method by which PCA is carried out (i.e. correlation or covariance matrix)
+
+* Determining which variables will be used in plots
+
+* Determining what plot will be produced at any given time
